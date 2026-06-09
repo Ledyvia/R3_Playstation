@@ -113,6 +113,11 @@
     border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.88rem;
     font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: opacity .15s; }
   .btn-yellow:hover { opacity: .85; }
+  /* ── PATCH 1: tombol reset ── */
+  .btn-reset { background: linear-gradient(135deg, #be123c, #e11d48); color: #fff;
+    border: none; border-radius: 8px; padding: 10px 20px; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: opacity .15s; }
+  .btn-reset:hover { opacity: .85; }
   .ctrl-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text);
     border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-size: 1rem;
     display: flex; align-items: center; justify-content: center; transition: border-color .15s; }
@@ -334,8 +339,10 @@
     <div class="total-item"><div class="t-label">✅ Laba Bersih</div><div class="t-val" id="tbLaba">Rp 0</div></div>
   </div>
 
-  <!-- EXPORT -->
+  <!-- EXPORT + RESET -->
+  <!-- PATCH 2: tambah tombol reset di sebelah kiri export -->
   <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:32px">
+    <button class="btn-reset" onclick="bersihkanSesiSelesai()">🗑 Bersihkan Sesi Selesai</button>
     <button class="btn-accent" onclick="exportExcel('today')">📄 Export Hari Ini</button>
     <button class="btn-yellow" onclick="exportExcel('all')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
@@ -584,7 +591,6 @@ function updateClock() {
   const curMin = now.getHours() * 60 + now.getMinutes();
   if (curMin !== _lastBadgeMin) {
     _lastBadgeMin = curMin;
-    // Re-render sessions to update badges & possibly reorder active/done
     const focused = document.activeElement;
     const focusedIsTime = focused && focused.type === 'time';
     if (!focusedIsTime) {
@@ -628,7 +634,6 @@ function renderTvSelector() {
   if (!wrap) return;
   const count    = getUnitCount();
   const sess     = getSessions();
-  // TV dianggap "aktif" jika ada sesi yang belum selesai (status != done)
   const activeTVs = new Set(
     sess.filter(s => getSessStatus(s) !== 'done' && s.tvNum).map(s => s.tvNum)
   );
@@ -704,14 +709,12 @@ function confirmAddSession() {
 
   const list = document.getElementById('psSessionList');
 
-  // Kalau list masih empty state, full render sekali
   if (!list.querySelector('[id^="psrow-"]')) {
     renderPsSessions();
     recalc();
     return;
   }
 
-  // Cari atau buat section header "Sedang Aktif"
   let activeHdr = document.getElementById('sess-hdr-active');
   if (!activeHdr) {
     activeHdr = document.createElement('div');
@@ -721,7 +724,6 @@ function confirmAddSession() {
     list.insertBefore(activeHdr, list.firstChild);
   }
 
-  // Append sesi baru tepat sebelum section "Sudah Selesai" (atau di akhir aktif)
   const doneHdr = document.getElementById('sess-hdr-done');
   const tmp = document.createElement('div');
   tmp.innerHTML = buildSessHTML(newSess, getSessions().length - 1);
@@ -732,7 +734,6 @@ function confirmAddSession() {
     list.appendChild(newEl);
   }
 
-  // Update counter aktif
   const sess = getSessions();
   const activeCount = sess.filter(s => getSessStatus(s) !== 'done').length;
   activeHdr.querySelector('span').textContent = `(${activeCount})`;
@@ -766,7 +767,7 @@ function sessBadgeHTML(s) {
 }
 
 // ════════════════════════════════════════════
-//  RENDER PS SESSIONS (with Active/Done split)
+//  RENDER PS SESSIONS
 // ════════════════════════════════════════════
 function buildSessHTML(s, displayIdx) {
   const mins       = calcDiff(s.startTime, s.endTime);
@@ -779,7 +780,6 @@ function buildSessHTML(s, displayIdx) {
   const smTotal    = smItems.reduce((a,t) => a + t.price * t.qty, 0);
   const grandTotal = earn + smTotal;
 
-  // Menu buttons — hidden when done
   const menuBtns = !isDone
     ? (menuItems.length
         ? menuItems.map(m => `
@@ -791,7 +791,6 @@ function buildSessHTML(s, displayIdx) {
         : `<span style="color:var(--muted);font-size:0.78rem">Belum ada menu.</span>`)
     : '';
 
-  // Transaction rows
   const txRows = smItems.length
     ? smItems.map(t => `
         <div class="sess-tx-row">
@@ -807,12 +806,10 @@ function buildSessHTML(s, displayIdx) {
         </div>`).join('')
     : `<div style="color:var(--muted);font-size:0.78rem;padding:4px 0">Belum ada pesanan</div>`;
 
-  // Action button: ✕ delete (active) vs 🔒 locked (done)
   const actionBtn = isDone
     ? `<span class="lock-icon" title="Sesi terkunci — sudah selesai & tersimpan di laporan">🔒</span>`
     : `<button class="btn-danger-sm" onclick="removePsSession(${s.id})">✕</button>`;
 
-  // Time inputs: editable (active) vs read-only display (done)
   const startField = isDone
     ? `<div class="time-readonly">${s.startTime}</div>`
     : `<input type="time" class="form-control" value="${s.startTime||''}" onblur="psChange(${s.id},'startTime',this.value)">`;
@@ -863,11 +860,10 @@ function renderPsSessions() {
     return;
   }
 
-  // Aktif: terbaru di atas (descending inputOrder)
-  // Done: pindah ke section bawah
-  const activeSess = sess.filter(s => getSessStatus(s) !== 'done')
+  // Aktif: terbaru di atas, hidden tidak ditampilkan
+  const activeSess = sess.filter(s => getSessStatus(s) !== 'done' && !s.hidden)
                          .sort((a,b) => (b.inputOrder||b.id) - (a.inputOrder||a.id));
-  const doneSess   = sess.filter(s => getSessStatus(s) === 'done')
+  const doneSess   = sess.filter(s => getSessStatus(s) === 'done' && !s.hidden)
                          .sort((a,b) => (b.inputOrder||b.id) - (a.inputOrder||a.id));
   let html = '';
 
@@ -894,7 +890,6 @@ function psChange(id, field, val) {
   if (!s) return;
   s[field] = val;
   persist();
-  // After endTime is set, re-render to potentially move to done section
   renderPsSessions();
   recalc();
 }
@@ -994,7 +989,6 @@ function _refreshSessTx(s) {
           </div>`).join('')
       : `<div style="color:var(--muted);font-size:0.78rem;padding:4px 0">Belum ada pesanan</div>`;
   }
-  // Update subtotal label
   const panel = document.getElementById('psrow-' + s.id);
   if (panel) {
     const titleEl = panel.querySelector('.sm-title');
@@ -1013,7 +1007,6 @@ function _refreshSessTx(s) {
         existing.remove();
       }
     }
-    // Update total chip
     const chip = document.getElementById('sess-chip-' + s.id);
     if (chip) {
       const earn       = calcEarning(calcDiff(s.startTime, s.endTime));
@@ -1173,6 +1166,19 @@ function deleteDay(k) {
   if (!confirm(`Hapus data ${fmtKey(k)}?`)) return;
   localStorage.removeItem('r3ps_day_' + k);
   renderHistory();
+}
+
+// ════════════════════════════════════════════
+//  BERSIHKAN SESI SELESAI
+// ════════════════════════════════════════════
+function bersihkanSesiSelesai() {
+  const selesai = getSessions().filter(s => getSessStatus(s) === 'done' && !s.hidden);
+  if (!selesai.length) { alert('Tidak ada sesi selesai untuk dibersihkan.'); return; }
+  if (!confirm(`Sembunyikan ${selesai.length} sesi selesai dari tampilan hari ini?\n\nData tetap tersimpan lengkap di Riwayat & cloud.`)) return;
+  // Tandai sesi selesai dengan flag hidden — data TIDAK dihapus dari Firebase
+  selesai.forEach(s => { s.hidden = true; });
+  persist();
+  renderAll();
 }
 
 // ════════════════════════════════════════════
