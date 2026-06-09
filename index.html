@@ -512,10 +512,9 @@ async function syncFromCloud() {
         }
       }
     });
-    window._appInit = function() { syncFromCloud(); };
-renderAll();
-// Try sync if Firebase already ready
-setTimeout(() => { if (window._cloudReady) syncFromCloud(); }, 500);
+    if (!document.activeElement || document.activeElement.type !== 'time') {
+      renderAll();
+    }
     if (syncDot) syncDot.style.background = 'var(--green)';
   } catch(e) {
     console.warn('Sync failed:', e);
@@ -579,10 +578,7 @@ function updateClock() {
   if (key !== TODAY) {
     TODAY   = key;
     dayData = loadDay(TODAY);
-    window._appInit = function() { syncFromCloud(); };
-renderAll();
-// Try sync if Firebase already ready
-setTimeout(() => { if (window._cloudReady) syncFromCloud(); }, 500);
+    renderAll();
   }
   document.getElementById('hariIni').textContent = DAYS_ID[now.getDay()];
   document.getElementById('tanggalIni').textContent =
@@ -650,7 +646,7 @@ function psChange(id, field, val) {
 
 
 function timeSelect(id, field, val) {
-  return `<input type="time" class="form-control" value="${val||''}" onchange="psChange(${id},'${field}',this.value)">`;
+  return `<input type="time" class="form-control" value="${val||''}" onblur="psChange(${id},'${field}',this.value)">`;
 }
 
 function renderPsSessions() {
