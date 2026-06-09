@@ -165,6 +165,59 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
   .save-label { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; }
 
+  /* TV SELECTOR */
+  .tv-btn { border: 1.5px solid var(--border); background: var(--surface); border-radius: 9px;
+    padding: 7px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    transition: all .15s; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 58px; }
+  .tv-btn .tv-num { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; }
+  .tv-btn .tv-status { font-size: 0.62rem; letter-spacing: 0.5px; }
+  .tv-btn:hover:not(.tv-on) { border-color: var(--accent); }
+  .tv-btn.tv-on  { border-color: var(--green); background: rgba(5,150,105,.1); color: var(--green); cursor: default; }
+
+  /* SESSION SECTION HEADER */
+  .sess-section-hdr {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 6px 0 4px; margin-bottom: 4px;
+    border-bottom: 2px solid;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sess-section-hdr.active { color: var(--accent); border-color: rgba(61,107,255,.2); }
+  .sess-section-hdr.done   { color: var(--green);  border-color: rgba(5,150,105,.2); }
+
+  /* SESSION TOTAL CHIP */
+  .sess-total-chip { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg,rgba(61,107,255,.07),rgba(124,58,237,.07));
+    border: 1px solid rgba(124,58,237,.18); border-radius: 8px; padding: 7px 12px; margin-top: 10px; flex-wrap: wrap; }
+  .sess-total-chip span { font-size: 0.78rem; color: var(--muted); }
+  .sess-total-chip b { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; }
+  .sess-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem;
+    font-weight: 700; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; }
+  .sess-badge.done   { background: rgba(5,150,105,.13); color: var(--green); border: 1px solid rgba(5,150,105,.25); }
+  .sess-badge.active { background: rgba(61,107,255,.13); color: var(--accent); border: 1px solid rgba(61,107,255,.25); }
+  .sess-badge.skip   { background: rgba(100,116,139,.1); color: var(--muted); border: 1px solid rgba(100,116,139,.2); }
+
+  /* LOCK ICON */
+  .lock-icon { font-size: 1.1rem; cursor: default; opacity: 0.55; user-select: none; }
+
+  /* MAKMIN PER SESSION */
+  .sess-makmin-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; margin-top: 10px; }
+  .sess-makmin-panel .sm-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .sess-makmin-menu  { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .sm-menu-btn { background: var(--card); border: 1px solid var(--border); border-radius: 7px;
+    padding: 5px 10px; font-size: 0.77rem; cursor: pointer; transition: border-color .12s; display: flex; flex-direction: column; gap: 2px; }
+  .sm-menu-btn:hover { border-color: var(--accent2); }
+  .sm-menu-btn .sm-price { font-family: 'Orbitron',sans-serif; font-size: 0.68rem; color: var(--yellow); }
+  .sess-tx-row { display: flex; align-items: center; gap: 6px; padding: 4px 0;
+    border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+  .sess-tx-row:last-child { border-bottom: none; }
+  .sess-tx-name { flex: 1; }
+  .sess-tx-total { font-family: 'Orbitron',sans-serif; font-size: 0.77rem; color: var(--yellow); min-width: 60px; text-align: right; }
+
+  /* READ-ONLY TIME DISPLAY */
+  .time-readonly { padding: 8px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 0.87rem; color: var(--muted); }
+
   .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
   .empty-state { text-align: center; padding: 28px; color: var(--muted); font-size: 0.88rem; }
   .empty-state .big { font-size: 1.8rem; display: block; margin-bottom: 8px; }
@@ -174,47 +227,30 @@
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
   @media (max-width: 600px) {
-    /* Prevent horizontal overflow */
     body { overflow-x: hidden; }
     * { max-width: 100%; }
-
-    /* Header */
     header { padding: 8px 10px; gap: 6px; flex-wrap: nowrap; }
     .logo { font-size: 0.8rem; }
     .logo span { font-size: 0.55rem; letter-spacing: 1px; }
     .date-badge { padding: 4px 8px; font-size: 0.65rem; min-width: 0; flex-shrink: 0; }
     .date-badge strong { font-size: 0.75rem; }
     .save-label { font-size: 0.6rem; white-space: nowrap; }
-
-    /* Stat grid: 2 kolom di HP */
     .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-card { padding: 10px 12px; }
     .stat-card .value { font-size: 0.9rem; }
-
-    /* PS row - stack vertically on mobile */
     .ps-row { grid-template-columns: 36px 1fr 1fr; gap: 6px; }
     .ps-row > div:nth-child(4) { grid-column: 2; }
     .ps-row > div:nth-child(5) { grid-column: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .ps-row .earning-display { display: block; font-size: 0.82rem; }
     .ps-row .btn-danger-sm { display: inline-block; }
-
-    /* Panel */
     .panel { padding: 12px 10px; }
     main { padding: 12px 10px; }
-
-    /* Table: scroll horizontal */
     .data-table { font-size: 0.75rem; }
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
     .data-table { min-width: 480px; }
-
-    /* Form input row */
     .input-row { flex-direction: column; }
     .input-row .form-group { min-width: unset; width: 100%; }
-
-    /* Menu cards */
     .menu-card { min-width: 100px; max-width: 130px; }
-
-    /* Total bar */
     .total-bar { grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
   }
 </style>
@@ -260,27 +296,15 @@
 
   <!-- SESI PS -->
   <div class="panel">
-    <div class="section-title">🎮 Sesi Bermain PlayStation 3</div>
+    <div class="section-title">📺 Sesi Bermain PlayStation</div>
     <div class="ps-count-ctrl">
-      <span style="font-size:0.83rem;color:var(--muted)">Jumlah unit PS:</span>
+      <span style="font-size:0.83rem;color:var(--muted)">Jumlah unit TV:</span>
       <button class="ctrl-btn" onclick="changeUnitCount(-1)">−</button>
-      <span class="ps-count-display" id="unitCountDisp">1</span>
+      <span class="ps-count-display" id="unitCountDisp">4</span>
       <button class="ctrl-btn" onclick="changeUnitCount(1)">+</button>
     </div>
+    <div id="tvSelectorWrap" style="margin-bottom:12px"></div>
     <div id="psSessionList"></div>
-    <div style="margin-top:12px">
-      <button class="btn-green" onclick="addPsSession()">＋ Tambah Sesi</button>
-    </div>
-  </div>
-
-  <!-- MAKMIN -->
-  <div class="panel">
-    <div class="section-title">🍜 Transaksi Makanan &amp; Minuman</div>
-    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:600">MENU — KLIK UNTUK JUAL</div>
-    <div id="menuGridToday" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
-    <hr class="divider">
-    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:600">LOG TRANSAKSI HARI INI</div>
-    <div id="makminLog"></div>
   </div>
 
   <!-- PENGELUARAN -->
@@ -312,9 +336,7 @@
 
   <!-- EXPORT -->
   <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:32px">
-    <button class="btn-accent" onclick="exportExcel('today')">
-      📄 Export Hari Ini
-    </button>
+    <button class="btn-accent" onclick="exportExcel('today')">📄 Export Hari Ini</button>
     <button class="btn-yellow" onclick="exportExcel('all')">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
       Export Semua Riwayat
@@ -387,14 +409,10 @@
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  // ── SAVE to Firestore ──
   async function saveToCloud(key, data) {
-    try {
-      await setDoc(doc(db, 'r3ps', key), { payload: JSON.stringify(data) });
-    } catch(e) { console.warn('Cloud save failed:', e); }
+    try { await setDoc(doc(db, 'r3ps', key), { payload: JSON.stringify(data) }); }
+    catch(e) { console.warn('Cloud save failed:', e); }
   }
-
-  // ── LOAD from Firestore ──
   async function loadFromCloud(key) {
     try {
       const snap = await getDoc(doc(db, 'r3ps', key));
@@ -402,8 +420,6 @@
     } catch(e) { console.warn('Cloud load failed:', e); }
     return null;
   }
-
-  // ── LOAD ALL KEYS from Firestore ──
   async function loadAllKeysFromCloud() {
     try {
       const snap = await getDocs(collection(db, 'r3ps'));
@@ -411,16 +427,12 @@
     } catch(e) { console.warn('Cloud loadAllKeys failed:', e); return []; }
   }
 
-  // Expose to global scope
   window._cloudSave     = saveToCloud;
   window._cloudLoad     = loadFromCloud;
   window._cloudLoadKeys = loadAllKeysFromCloud;
   window._cloudReady    = true;
 
-  // Init app after Firebase ready
-  window.addEventListener('DOMContentLoaded', () => {});
   if (document.readyState !== 'loading') {
-    // already loaded, trigger re-init
     setTimeout(() => { if (window._appInit) window._appInit(); }, 300);
   } else {
     document.addEventListener('DOMContentLoaded', () => {
@@ -434,8 +446,8 @@
 // ════════════════════════════════════════════
 //  CONSTANTS & HELPERS
 // ════════════════════════════════════════════
-const PRICE_PER_HOUR = 5000; // Rp 5.000 per jam
-const PRICE_PER_HALF = 3000; // Rp 3.000 per 30 menit tambahan
+const PRICE_PER_HOUR = 5000;
+const PRICE_PER_HALF = 3000;
 const DAYS_ID   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const MONTHS_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
@@ -448,7 +460,7 @@ function fmtKey(k) {
   const dt = new Date(y, m-1, d);
   return `${DAYS_ID[dt.getDay()]}, ${parseInt(d)} ${MONTHS_ID[parseInt(m)-1]} ${y}`;
 }
-function rp(n)      { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+function rp(n)        { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
 function minsToStr(m) { return `${Math.floor(m/60)}j ${m%60}m`; }
 function calcDiff(s,e) {
   if (!s||!e) return 0;
@@ -459,49 +471,68 @@ function calcDiff(s,e) {
   return d;
 }
 function calcEarning(mins) {
-  // Tarif:
-  // Jam penuh        = Rp 5.000/jam
-  // Sisa  1–15 menit = +Rp 1.000
-  // Sisa 16–45 menit = +Rp 3.000
-  // Sisa 46–59 menit = +Rp 5.000 (jam penuh berikutnya)
   const fullHours = Math.floor(mins / 60);
   const remMins   = mins % 60;
   let extra = 0;
-  if      (remMins >= 46) extra = PRICE_PER_HOUR;        // → jam penuh berikutnya
-  else if (remMins >= 16) extra = PRICE_PER_HALF;        // → +Rp 3.000
-  else if (remMins >= 1)  extra = 1000;                  // → +Rp 1.000
+  if      (remMins >= 46) extra = PRICE_PER_HOUR;
+  else if (remMins >= 16) extra = PRICE_PER_HALF;
+  else if (remMins >= 1)  extra = 1000;
   return fullHours * PRICE_PER_HOUR + extra;
 }
 
 let nextId = Date.now();
 
 // ════════════════════════════════════════════
-//  LOCAL STORAGE  (key schema)
-//  r3ps_menu          → [{id,name,price,category}]
-//  r3ps_day_{DATE}    → {sessions, makminTx, expenses, unitCount}
+//  STORAGE
 // ════════════════════════════════════════════
 function loadMenu() {
   try { return JSON.parse(localStorage.getItem('r3ps_menu')) || defaultMenu(); }
   catch { return defaultMenu(); }
 }
+function saveMenu(m) {
+  localStorage.setItem('r3ps_menu', JSON.stringify(m));
+  if (window._cloudSave) window._cloudSave('menu', m);
+}
+function defaultMenu() {
+  return [
+    { id: 1, name: 'Air Mineral',  price: 2000, category: 'minuman' },
+    { id: 2, name: 'Es Teh',       price: 3000, category: 'minuman' },
+    { id: 3, name: 'Mie Instan',   price: 4000, category: 'makanan' },
+    { id: 4, name: 'Keripik',      price: 3000, category: 'makanan' },
+  ];
+}
+function loadDay(key) {
+  try {
+    const d = JSON.parse(localStorage.getItem('r3ps_day_' + key));
+    return d || { sessions: [], makminTx: [], expenses: [], unitCount: 1 };
+  } catch { return { sessions: [], makminTx: [], expenses: [], unitCount: 1 }; }
+}
+function saveDay(key, data) {
+  localStorage.setItem('r3ps_day_' + key, JSON.stringify(data));
+  if (window._cloudSave) window._cloudSave('day_' + key, data);
+}
+function allDayKeys() {
+  return Object.keys(localStorage)
+    .filter(k => k.startsWith('r3ps_day_'))
+    .map(k => k.replace('r3ps_day_',''))
+    .sort().reverse();
+}
+
 async function syncFromCloud() {
   if (!window._cloudLoad) return;
   const syncDot = document.querySelector('.save-dot');
   if (syncDot) syncDot.style.background = 'var(--yellow)';
   try {
-    // Sync menu
     const cloudMenu = await window._cloudLoad('menu');
     if (cloudMenu) {
       menuItems = cloudMenu;
       localStorage.setItem('r3ps_menu', JSON.stringify(cloudMenu));
     }
-    // Sync today
     const cloudDay = await window._cloudLoad('day_' + TODAY);
     if (cloudDay) {
       dayData = cloudDay;
       localStorage.setItem('r3ps_day_' + TODAY, JSON.stringify(cloudDay));
     }
-    // Sync all history keys
     const keys = await window._cloudLoadKeys();
     keys.forEach(async k => {
       if (k.startsWith('day_')) {
@@ -521,37 +552,6 @@ async function syncFromCloud() {
     if (syncDot) syncDot.style.background = 'var(--red)';
   }
 }
-function saveMenu(m) {
-  localStorage.setItem('r3ps_menu', JSON.stringify(m));
-  if (window._cloudSave) window._cloudSave('menu', m);
-}
-
-function defaultMenu() {
-  return [
-    { id: 1, name: 'Air Mineral',  price: 2000, category: 'minuman' },
-    { id: 2, name: 'Es Teh',       price: 3000, category: 'minuman' },
-    { id: 3, name: 'Mie Instan',   price: 4000, category: 'makanan' },
-    { id: 4, name: 'Keripik',      price: 3000, category: 'makanan' },
-  ];
-}
-
-function loadDay(key) {
-  try {
-    const d = JSON.parse(localStorage.getItem('r3ps_day_' + key));
-    return d || { sessions: [], makminTx: [], expenses: [], unitCount: 1 };
-  } catch { return { sessions: [], makminTx: [], expenses: [], unitCount: 1 }; }
-}
-function saveDay(key, data) {
-  localStorage.setItem('r3ps_day_' + key, JSON.stringify(data));
-  if (window._cloudSave) window._cloudSave('day_' + key, data);
-}
-
-function allDayKeys() {
-  return Object.keys(localStorage)
-    .filter(k => k.startsWith('r3ps_day_'))
-    .map(k => k.replace('r3ps_day_',''))
-    .sort().reverse();
-}
 
 // ════════════════════════════════════════════
 //  STATE
@@ -560,20 +560,17 @@ let menuItems = loadMenu();
 let TODAY     = todayKey();
 let dayData   = loadDay(TODAY);
 
-// shorthand refs
 function getSessions()  { return dayData.sessions; }
-function getMakminTx()  { return dayData.makminTx; }
 function getExpenses()  { return dayData.expenses; }
 function getUnitCount() { return dayData.unitCount || 1; }
-
-function persist() { saveDay(TODAY, dayData); }
+function persist()      { saveDay(TODAY, dayData); }
 
 // ════════════════════════════════════════════
 //  CLOCK
 // ════════════════════════════════════════════
+let _lastBadgeMin = -1;
 function updateClock() {
   const now = new Date();
-  // auto-roll date
   const key = todayKey();
   if (key !== TODAY) {
     TODAY   = key;
@@ -583,6 +580,18 @@ function updateClock() {
   document.getElementById('hariIni').textContent = DAYS_ID[now.getDay()];
   document.getElementById('tanggalIni').textContent =
     `${now.getDate()} ${MONTHS_ID[now.getMonth()]} ${now.getFullYear()} • ${now.toLocaleTimeString('id-ID')}`;
+
+  const curMin = now.getHours() * 60 + now.getMinutes();
+  if (curMin !== _lastBadgeMin) {
+    _lastBadgeMin = curMin;
+    // Re-render sessions to update badges & possibly reorder active/done
+    const focused = document.activeElement;
+    const focusedIsTime = focused && focused.type === 'time';
+    if (!focusedIsTime) {
+      renderPsSessions();
+      recalc();
+    }
+  }
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -608,83 +617,290 @@ function changeUnitCount(d) {
   dayData.unitCount = Math.max(1, Math.min(10, getUnitCount() + d));
   document.getElementById('unitCountDisp').textContent = getUnitCount();
   persist();
+  renderTvSelector();
 }
 
 // ════════════════════════════════════════════
-//  PS SESSIONS
+//  TV SELECTOR
 // ════════════════════════════════════════════
-function addPsSession() {
+function renderTvSelector() {
+  const wrap = document.getElementById('tvSelectorWrap');
+  if (!wrap) return;
+  const count    = getUnitCount();
+  const sess     = getSessions();
+  // TV dianggap "aktif" jika ada sesi yang belum selesai (status != done)
+  const activeTVs = new Set(
+    sess.filter(s => getSessStatus(s) !== 'done' && s.tvNum).map(s => s.tvNum)
+  );
+
+  let html = '<div style="font-size:0.73rem;color:var(--muted);margin-bottom:8px;font-weight:600">PILIH TV YANG INGIN DICATAT:</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px">';
+  for (let i = 1; i <= count; i++) {
+    const on = activeTVs.has(i);
+    html += `<button class="tv-btn${on?' tv-on':''}"
+      onclick="${on ? '' : `showTvForm(${i})`}"
+      id="tv-btn-${i}" ${on ? 'title="Sedang aktif"' : ''}>
+      <span class="tv-num">TV${i}</span>
+      <span class="tv-status">${on ? '🟢 Main' : '＋ Catat'}</span>
+    </button>`;
+  }
+  html += '</div>';
+  html += `<div id="tvFormArea" style="display:none;margin-top:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+    <div style="font-size:0.78rem;font-weight:700;color:var(--accent);margin-bottom:10px" id="tvFormTitle">📺 Input Sesi TV</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <label class="small">Jam Mulai</label>
+        <input type="time" class="form-control" id="tvStartInput">
+      </div>
+      <div>
+        <label class="small">Jam Selesai <span style="color:var(--muted)">(opsional)</span></label>
+        <input type="time" class="form-control" id="tvEndInput">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-green" onclick="confirmAddSession()" style="padding:7px 16px;font-size:0.83rem">✔ Simpan Sesi</button>
+      <button class="btn-danger-sm" onclick="hideTvForm()" style="padding:7px 12px">Batal</button>
+    </div>
+  </div>`;
+  wrap.innerHTML = html;
+}
+
+let _pendingTvNum = null;
+
+function showTvForm(tvNum) {
+  _pendingTvNum = tvNum;
+  const area  = document.getElementById('tvFormArea');
+  const title = document.getElementById('tvFormTitle');
+  if (!area) return;
   const now = new Date();
-  const h = now.getHours();
-  const m = Math.floor(now.getMinutes() / 5) * 5;
-  const startTime = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
-  getSessions().push({ id: nextId++, startTime, endTime: '', note: '' });
+  const h = now.getHours(), m = Math.floor(now.getMinutes()/5)*5;
+  document.getElementById('tvStartInput').value = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  document.getElementById('tvEndInput').value = '';
+  title.textContent = `📺 Input Sesi TV${tvNum}`;
+  area.style.display = 'block';
+  document.querySelectorAll('.tv-btn').forEach(b => b.style.outline = 'none');
+  const btn = document.getElementById(`tv-btn-${tvNum}`);
+  if (btn) btn.style.outline = '2px solid var(--accent)';
+}
+function hideTvForm() {
+  _pendingTvNum = null;
+  const area = document.getElementById('tvFormArea');
+  if (area) area.style.display = 'none';
+  document.querySelectorAll('.tv-btn').forEach(b => b.style.outline = 'none');
+}
+function confirmAddSession() {
+  const tvNum    = _pendingTvNum;
+  const startVal = document.getElementById('tvStartInput').value;
+  const endVal   = document.getElementById('tvEndInput').value;
+  if (!startVal) { alert('Jam mulai wajib diisi!'); return; }
+  const newSess = {
+    id: nextId++, startTime: startVal, endTime: endVal || '',
+    note: '', noCustomer: false, sessionMakmin: [], tvNum: tvNum || null,
+    inputOrder: Date.now()
+  };
+  getSessions().push(newSess);
   persist();
-  renderPsSessions();
+  hideTvForm();
+
+  const list = document.getElementById('psSessionList');
+
+  // Kalau list masih empty state, full render sekali
+  if (!list.querySelector('[id^="psrow-"]')) {
+    renderPsSessions();
+    recalc();
+    return;
+  }
+
+  // Cari atau buat section header "Sedang Aktif"
+  let activeHdr = document.getElementById('sess-hdr-active');
+  if (!activeHdr) {
+    activeHdr = document.createElement('div');
+    activeHdr.id = 'sess-hdr-active';
+    activeHdr.className = 'sess-section-hdr active';
+    activeHdr.innerHTML = '🟢 Sedang Aktif <span style="opacity:.6"></span>';
+    list.insertBefore(activeHdr, list.firstChild);
+  }
+
+  // Append sesi baru tepat sebelum section "Sudah Selesai" (atau di akhir aktif)
+  const doneHdr = document.getElementById('sess-hdr-done');
+  const tmp = document.createElement('div');
+  tmp.innerHTML = buildSessHTML(newSess, getSessions().length - 1);
+  const newEl = tmp.firstElementChild;
+  if (doneHdr) {
+    list.insertBefore(newEl, doneHdr);
+  } else {
+    list.appendChild(newEl);
+  }
+
+  // Update counter aktif
+  const sess = getSessions();
+  const activeCount = sess.filter(s => getSessStatus(s) !== 'done').length;
+  activeHdr.querySelector('span').textContent = `(${activeCount})`;
+
+  renderTvSelector();
   recalc();
 }
+
+// ════════════════════════════════════════════
+//  SESSION STATUS
+// ════════════════════════════════════════════
+function getSessStatus(s) {
+  const now     = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const toMins  = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+  if (!s.startTime) return 'idle';
+  const startMins = toMins(s.startTime);
+  if (s.endTime) {
+    const endMins = toMins(s.endTime);
+    if (nowMins >= endMins) return 'done';
+    return 'playing';
+  }
+  if (nowMins >= startMins) return 'playing';
+  return 'idle';
+}
+function sessBadgeHTML(s) {
+  const status = getSessStatus(s);
+  if (status === 'done')    return `<span class="sess-badge done">✅ Selesai</span>`;
+  if (status === 'playing') return `<span class="sess-badge active">🟢 Sedang Main</span>`;
+  return `<span class="sess-badge skip">⏳ Belum Mulai</span>`;
+}
+
+// ════════════════════════════════════════════
+//  RENDER PS SESSIONS (with Active/Done split)
+// ════════════════════════════════════════════
+function buildSessHTML(s, displayIdx) {
+  const mins       = calcDiff(s.startTime, s.endTime);
+  const earn       = calcEarning(mins);
+  const status     = getSessStatus(s);
+  const isDone     = status === 'done';
+  const badge      = sessBadgeHTML(s);
+  const tvLabel    = s.tvNum ? `TV${s.tvNum}` : `#${displayIdx+1}`;
+  const smItems    = s.sessionMakmin || [];
+  const smTotal    = smItems.reduce((a,t) => a + t.price * t.qty, 0);
+  const grandTotal = earn + smTotal;
+
+  // Menu buttons — hidden when done
+  const menuBtns = !isDone
+    ? (menuItems.length
+        ? menuItems.map(m => `
+            <button class="sm-menu-btn" onclick="addSessMakmin(${s.id},${m.id})">
+              <span style="font-size:0.78rem;font-weight:600">${m.name}</span>
+              <span class="badge-cat ${m.category==='makanan'?'badge-food':'badge-drink'}" style="font-size:0.63rem">${m.category==='makanan'?'🍜':'🥤'}</span>
+              <span class="sm-price">${rp(m.price)}</span>
+            </button>`).join('')
+        : `<span style="color:var(--muted);font-size:0.78rem">Belum ada menu.</span>`)
+    : '';
+
+  // Transaction rows
+  const txRows = smItems.length
+    ? smItems.map(t => `
+        <div class="sess-tx-row">
+          <span class="sess-tx-name">${t.menuName}</span>
+          ${!isDone ? `
+            <div style="display:flex;align-items:center;gap:5px">
+              <button class="ctrl-btn" style="width:20px;height:20px;font-size:0.8rem" onclick="changeSessMakminQty(${s.id},${t.id},-1)">−</button>
+              <span style="font-family:'Orbitron',sans-serif;font-size:0.78rem">${t.qty}</span>
+              <button class="ctrl-btn" style="width:20px;height:20px;font-size:0.8rem" onclick="changeSessMakminQty(${s.id},${t.id},1)">+</button>
+            </div>` : `<span style="font-family:'Orbitron',sans-serif;font-size:0.78rem;color:var(--muted)">${t.qty}x</span>`}
+          <span class="sess-tx-total">${rp(t.price*t.qty)}</span>
+          ${!isDone ? `<button class="btn-danger-sm" style="padding:2px 7px" onclick="removeSessMakmin(${s.id},${t.id})">✕</button>` : ''}
+        </div>`).join('')
+    : `<div style="color:var(--muted);font-size:0.78rem;padding:4px 0">Belum ada pesanan</div>`;
+
+  // Action button: ✕ delete (active) vs 🔒 locked (done)
+  const actionBtn = isDone
+    ? `<span class="lock-icon" title="Sesi terkunci — sudah selesai & tersimpan di laporan">🔒</span>`
+    : `<button class="btn-danger-sm" onclick="removePsSession(${s.id})">✕</button>`;
+
+  // Time inputs: editable (active) vs read-only display (done)
+  const startField = isDone
+    ? `<div class="time-readonly">${s.startTime}</div>`
+    : `<input type="time" class="form-control" value="${s.startTime||''}" onblur="psChange(${s.id},'startTime',this.value)">`;
+  const endField = isDone
+    ? `<div class="time-readonly">${s.endTime}</div>`
+    : `<input type="time" class="form-control" value="${s.endTime||''}" onblur="psChange(${s.id},'endTime',this.value)">`;
+
+  return `<div id="psrow-${s.id}" style="padding:14px 0;border-bottom:1px solid var(--border)${isDone?';opacity:0.82':''}">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="unit-label" style="${isDone?'background:linear-gradient(135deg,#059669,#34d399);':''}font-size:0.65rem">${tvLabel}</div>
+        ${badge}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="ps-dur" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--green)">${minsToStr(mins)}</span>
+        <span class="ps-pay" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--yellow)">${rp(earn)}</span>
+        ${actionBtn}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div><label class="small">Mulai</label>${startField}</div>
+      <div><label class="small">Selesai</label>${endField}</div>
+    </div>
+    <div class="sess-makmin-panel">
+      <div class="sm-title">
+        <span>🍜 Makmin Sesi Ini</span>
+        ${smTotal > 0 ? `<span style="font-family:'Orbitron',sans-serif;font-size:0.72rem;color:var(--accent2)">${rp(smTotal)}</span>` : ''}
+      </div>
+      ${menuBtns ? `<div class="sess-makmin-menu">${menuBtns}</div>` : ''}
+      <div id="sess-tx-${s.id}">${txRows}</div>
+    </div>
+    <div class="sess-total-chip" id="sess-chip-${s.id}">
+      <span>💰 Main: <b style="color:var(--green)">${rp(earn)}</b></span>
+      <span>🍜 Makmin: <b style="color:var(--accent2)">${rp(smTotal)}</b></span>
+      <span>📋 Total Sesi: <b style="color:var(--yellow)">${rp(grandTotal)}</b></span>
+    </div>
+  </div>`;
+}
+
+function renderPsSessions() {
+  document.getElementById('unitCountDisp').textContent = getUnitCount();
+  renderTvSelector();
+  const list = document.getElementById('psSessionList');
+  const sess = getSessions();
+
+  if (!sess.length) {
+    list.innerHTML = '<div class="empty-state"><span class="big">📺</span>Belum ada sesi. Pilih TV yang dinyalakan di atas.</div>';
+    return;
+  }
+
+  // Aktif: terbaru di atas (descending inputOrder)
+  // Done: pindah ke section bawah
+  const activeSess = sess.filter(s => getSessStatus(s) !== 'done')
+                         .sort((a,b) => (b.inputOrder||b.id) - (a.inputOrder||a.id));
+  const doneSess   = sess.filter(s => getSessStatus(s) === 'done')
+                         .sort((a,b) => (b.inputOrder||b.id) - (a.inputOrder||a.id));
+  let html = '';
+
+  if (activeSess.length) {
+    html += `<div id="sess-hdr-active" class="sess-section-hdr active">🟢 Sedang Aktif <span style="opacity:.6">(${activeSess.length})</span></div>`;
+    html += activeSess.map((s, i) => buildSessHTML(s, i)).join('');
+  }
+
+  if (doneSess.length) {
+    html += `<div id="sess-hdr-done" class="sess-section-hdr done" style="margin-top:${activeSess.length ? '20px' : '0'}">✅ Sudah Selesai <span style="opacity:.6">(${doneSess.length})</span></div>`;
+    html += doneSess.map((s, i) => buildSessHTML(s, i)).join('');
+  }
+
+  list.innerHTML = html;
+}
+
 function removePsSession(id) {
   dayData.sessions = getSessions().filter(s => s.id !== id);
   persist(); renderPsSessions(); recalc();
 }
+
 function psChange(id, field, val) {
   const s = getSessions().find(x => x.id === id);
   if (!s) return;
   s[field] = val;
   persist();
-  const mins = calcDiff(s.startTime, s.endTime);
-  const earn = calcEarning(mins);
-  const row = document.getElementById('psrow-' + id);
-  if (row) {
-    const durEl = row.querySelector('.ps-dur');
-    const payEl = row.querySelector('.ps-pay');
-    if (durEl) durEl.textContent = minsToStr(mins);
-    if (payEl) payEl.textContent = rp(earn);
-  }
+  // After endTime is set, re-render to potentially move to done section
+  renderPsSessions();
   recalc();
 }
 
-
-function timeSelect(id, field, val) {
-  return `<input type="time" class="form-control" value="${val||''}" onblur="psChange(${id},'${field}',this.value)">`;
-}
-
-function renderPsSessions() {
-  document.getElementById('unitCountDisp').textContent = getUnitCount();
-  const list = document.getElementById('psSessionList');
-  const sess = getSessions();
-  if (!sess.length) {
-    list.innerHTML = '<div class="empty-state"><span class="big">🎮</span>Belum ada sesi. Klik Tambah Sesi.</div>';
-    return;
-  }
-  list.innerHTML = sess.map((s,i) => {
-    const mins = calcDiff(s.startTime, s.endTime);
-    const earn = calcEarning(mins);
-    return `<div id="psrow-${s.id}" style="padding:12px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div class="unit-label">PS${i+1}</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span class="ps-dur" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--green)">${minsToStr(mins)}</span>
-          <span class="ps-pay" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--yellow)">${rp(earn)}</span>
-          <button class="btn-danger-sm" onclick="removePsSession(${s.id})">✕</button>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div>
-          <label class="small">Mulai</label>
-          ${timeSelect(s.id,'startTime',s.startTime)}
-        </div>
-        <div>
-          <label class="small">Selesai</label>
-          ${timeSelect(s.id,'endTime',s.endTime)}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
 // ════════════════════════════════════════════
-//  MENU (global, persisted separately)
+//  MENU
 // ════════════════════════════════════════════
 function addMenuItem() {
   const name  = document.getElementById('newMenuName').value.trim();
@@ -695,30 +911,13 @@ function addMenuItem() {
   saveMenu(menuItems);
   document.getElementById('newMenuName').value = '';
   document.getElementById('newMenuPrice').value = '';
-  renderMenuGrid();
   renderMenuMgr();
 }
 function removeMenuItem(id) {
   menuItems = menuItems.filter(m => m.id !== id);
   saveMenu(menuItems);
-  renderMenuGrid();
   renderMenuMgr();
 }
-
-function renderMenuGrid() {
-  const grid = document.getElementById('menuGridToday');
-  if (!menuItems.length) { grid.innerHTML = '<span style="color:var(--muted);font-size:0.84rem">Belum ada menu. Kelola di tab Menu.</span>'; return; }
-  grid.innerHTML = menuItems.map(m => `
-    <div class="menu-card" onclick="addTxMakmin(${m.id})">
-      <div style="display:flex;justify-content:space-between;gap:4px">
-        <span style="font-size:0.86rem;font-weight:600">${m.name}</span>
-      </div>
-      <span class="badge-cat ${m.category==='makanan'?'badge-food':'badge-drink'}">${m.category==='makanan'?'🍜 Makanan':'🥤 Minuman'}</span>
-      <div style="font-family:'Orbitron',sans-serif;font-size:0.82rem;color:var(--yellow)">${rp(m.price)}</div>
-      <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Klik untuk jual</div>
-    </div>`).join('');
-}
-
 function renderMenuMgr() {
   const el = document.getElementById('menuMgrList');
   if (!menuItems.length) { el.innerHTML = '<div class="empty-state"><span class="big">🍜</span>Belum ada menu</div>'; return; }
@@ -734,50 +933,97 @@ function renderMenuMgr() {
 }
 
 // ════════════════════════════════════════════
-//  MAKMIN TRANSACTIONS
+//  MAKMIN PER-SESI
 // ════════════════════════════════════════════
-function addTxMakmin(menuId) {
+function addSessMakmin(sessId, menuId) {
+  const s = getSessions().find(x => x.id === sessId);
   const m = menuItems.find(x => x.id === menuId);
-  if (!m) return;
-  const now = new Date();
-  getMakminTx().push({
-    id: nextId++, menuId, menuName: m.name, category: m.category,
-    price: m.price, qty: 1,
-    time: now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })
-  });
-  persist(); renderMakminLog(); recalc();
+  if (!s || !m) return;
+  if (!s.sessionMakmin) s.sessionMakmin = [];
+  const now     = new Date();
+  const timeStr = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+  const existing = s.sessionMakmin.find(t => t.menuId === menuId);
+  if (existing) { existing.qty++; }
+  else {
+    s.sessionMakmin.push({
+      id: nextId++, menuId, menuName: m.name, category: m.category,
+      price: m.price, qty: 1, time: timeStr
+    });
+  }
+  persist();
+  _refreshSessTx(s);
+  recalc();
 }
-function removeTxMakmin(id) {
-  dayData.makminTx = getMakminTx().filter(t => t.id !== id);
-  persist(); renderMakminLog(); recalc();
+function removeSessMakmin(sessId, txId) {
+  const s = getSessions().find(x => x.id === sessId);
+  if (!s) return;
+  s.sessionMakmin = (s.sessionMakmin || []).filter(t => t.id !== txId);
+  persist();
+  _refreshSessTx(s);
+  recalc();
 }
-function changeTxQty(id, d) {
-  const t = getMakminTx().find(x => x.id === id);
-  if (t) { t.qty = Math.max(1, t.qty + d); persist(); renderMakminLog(); recalc(); }
+function changeSessMakminQty(sessId, txId, d) {
+  const s = getSessions().find(x => x.id === sessId);
+  if (!s) return;
+  const t = (s.sessionMakmin || []).find(x => x.id === txId);
+  if (t) {
+    t.qty = Math.max(1, t.qty + d);
+    persist();
+    _refreshSessTx(s);
+    recalc();
+  }
 }
-
-function renderMakminLog() {
-  const log = document.getElementById('makminLog');
-  const tx  = getMakminTx();
-  if (!tx.length) { log.innerHTML = '<div class="empty-state"><span class="big">🛒</span>Belum ada transaksi</div>'; return; }
-  log.innerHTML = `<div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Waktu</th><th>Item</th><th>Kategori</th><th>Qty</th><th>Satuan</th><th>Total</th><th></th></tr></thead>
-    <tbody>${tx.map(t => `<tr>
-      <td>${t.time}</td>
-      <td>${t.menuName}</td>
-      <td><span class="badge-cat ${t.category==='makanan'?'badge-food':'badge-drink'}">${t.category==='makanan'?'🍜':'🥤'} ${t.category}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:5px">
-          <button class="ctrl-btn" style="width:22px;height:22px;font-size:0.85rem" onclick="changeTxQty(${t.id},-1)">−</button>
-          <span style="font-family:'Orbitron',sans-serif;font-size:0.82rem">${t.qty}</span>
-          <button class="ctrl-btn" style="width:22px;height:22px;font-size:0.85rem" onclick="changeTxQty(${t.id},1)">+</button>
-        </div>
-      </td>
-      <td>${rp(t.price)}</td>
-      <td style="color:var(--yellow);font-family:'Orbitron',sans-serif;font-size:0.82rem">${rp(t.price*t.qty)}</td>
-      <td><button class="btn-danger-sm" onclick="removeTxMakmin(${t.id})">✕</button></td>
-    </tr>`).join('')}</tbody>
-  </table></div>`;
+function _refreshSessTx(s) {
+  const smItems = s.sessionMakmin || [];
+  const smTotal = smItems.reduce((a,t) => a + t.price * t.qty, 0);
+  const isDone  = getSessStatus(s) === 'done';
+  const txEl    = document.getElementById('sess-tx-' + s.id);
+  if (txEl) {
+    txEl.innerHTML = smItems.length
+      ? smItems.map(t => `
+          <div class="sess-tx-row">
+            <span class="sess-tx-name">${t.menuName}</span>
+            ${!isDone ? `
+              <div style="display:flex;align-items:center;gap:5px">
+                <button class="ctrl-btn" style="width:20px;height:20px;font-size:0.8rem" onclick="changeSessMakminQty(${s.id},${t.id},-1)">−</button>
+                <span style="font-family:'Orbitron',sans-serif;font-size:0.78rem">${t.qty}</span>
+                <button class="ctrl-btn" style="width:20px;height:20px;font-size:0.8rem" onclick="changeSessMakminQty(${s.id},${t.id},1)">+</button>
+              </div>` : `<span style="font-family:'Orbitron',sans-serif;font-size:0.78rem;color:var(--muted)">${t.qty}x</span>`}
+            <span class="sess-tx-total">${rp(t.price*t.qty)}</span>
+            ${!isDone ? `<button class="btn-danger-sm" style="padding:2px 7px" onclick="removeSessMakmin(${s.id},${t.id})">✕</button>` : ''}
+          </div>`).join('')
+      : `<div style="color:var(--muted);font-size:0.78rem;padding:4px 0">Belum ada pesanan</div>`;
+  }
+  // Update subtotal label
+  const panel = document.getElementById('psrow-' + s.id);
+  if (panel) {
+    const titleEl = panel.querySelector('.sm-title');
+    if (titleEl) {
+      const existing = titleEl.querySelector('span:last-child');
+      if (smTotal > 0) {
+        if (existing && existing !== titleEl.querySelector('span:first-child')) {
+          existing.textContent = rp(smTotal);
+        } else {
+          const span = document.createElement('span');
+          span.style.cssText = "font-family:'Orbitron',sans-serif;font-size:0.72rem;color:var(--accent2)";
+          span.textContent = rp(smTotal);
+          titleEl.appendChild(span);
+        }
+      } else if (existing && existing !== titleEl.querySelector('span:first-child')) {
+        existing.remove();
+      }
+    }
+    // Update total chip
+    const chip = document.getElementById('sess-chip-' + s.id);
+    if (chip) {
+      const earn       = calcEarning(calcDiff(s.startTime, s.endTime));
+      const grandTotal = earn + smTotal;
+      chip.innerHTML = `
+        <span>💰 Main: <b style="color:var(--green)">${rp(earn)}</b></span>
+        <span>🍜 Makmin: <b style="color:var(--accent2)">${rp(smTotal)}</b></span>
+        <span>📋 Total Sesi: <b style="color:var(--yellow)">${rp(grandTotal)}</b></span>`;
+    }
+  }
 }
 
 // ════════════════════════════════════════════
@@ -797,11 +1043,13 @@ function removeExpense(id) {
   dayData.expenses = getExpenses().filter(e => e.id !== id);
   persist(); renderExpenses(); recalc();
 }
-
 function renderExpenses() {
   const el = document.getElementById('expenseList');
   const ex = getExpenses();
-  if (!ex.length) { el.innerHTML = '<div class="empty-state" style="padding:12px"><span style="font-size:1.3rem">—</span> Belum ada pengeluaran</div>'; return; }
+  if (!ex.length) {
+    el.innerHTML = '<div class="empty-state" style="padding:12px"><span style="font-size:1.3rem">—</span> Belum ada pengeluaran</div>';
+    return;
+  }
   el.innerHTML = ex.map(e => `
     <div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
       <div style="flex:1;font-size:0.87rem">${e.desc}</div>
@@ -814,17 +1062,17 @@ function renderExpenses() {
 //  RECALC
 // ════════════════════════════════════════════
 function calcDayTotals(data) {
-  const sessions = data.sessions || [];
-  const makminTx = data.makminTx || [];
-  const expenses = data.expenses || [];
+  const sessions  = data.sessions || [];
+  const expenses  = data.expenses || [];
+  const makminTx  = sessions.flatMap(s => s.sessionMakmin || []).concat(data.makminTx || []);
   let totalMins = 0, totalPS = 0;
   sessions.forEach(s => {
-    const m = calcDiff(s.startTime, s.endTime);
+    const m  = calcDiff(s.startTime, s.endTime);
     totalMins += m;
     totalPS   += calcEarning(m);
   });
-  const totalMM  = makminTx.reduce((s,t) => s + t.price * t.qty, 0);
-  const totalExp = expenses.reduce((s,e) => s + e.amount, 0);
+  const totalMM   = makminTx.reduce((s,t) => s + t.price * t.qty, 0);
+  const totalExp  = expenses.reduce((s,e) => s + e.amount, 0);
   const totalPend = totalPS + totalMM;
   return { totalMins, totalPS, totalMM, totalExp, totalPend, laba: totalPend - totalExp };
 }
@@ -846,9 +1094,11 @@ function recalc() {
 // ════════════════════════════════════════════
 function renderHistory() {
   const keys = allDayKeys();
-  const el = document.getElementById('historyList');
-  if (!keys.length) { el.innerHTML = '<div class="empty-state"><span class="big">📅</span>Belum ada riwayat tersimpan</div>'; return; }
-
+  const el   = document.getElementById('historyList');
+  if (!keys.length) {
+    el.innerHTML = '<div class="empty-state"><span class="big">📅</span>Belum ada riwayat tersimpan</div>';
+    return;
+  }
   el.innerHTML = keys.map(k => {
     const d = loadDay(k);
     const t = calcDayTotals(d);
@@ -873,35 +1123,37 @@ function renderHistory() {
     </div>`;
   }).join('');
 }
-
 function toggleHistory(k) {
-  const el = document.getElementById('hbody-' + k);
-  el.classList.toggle('open');
+  document.getElementById('hbody-' + k).classList.toggle('open');
 }
-
 function renderDayDetail(k, d) {
   const sess = d.sessions || [];
-  const tx   = d.makminTx || [];
   const exp  = d.expenses || [];
   const t    = calcDayTotals(d);
   return `
     <div style="padding-top:14px">
       <div style="font-size:0.75rem;color:var(--muted);font-weight:600;margin-bottom:8px">SESI PS (${sess.length} sesi)</div>
-      ${sess.length ? `<table class="data-table" style="margin-bottom:12px">
-        <thead><tr><th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Bayar</th></tr></thead>
-        <tbody>${sess.map(s => {
-          const m = calcDiff(s.startTime, s.endTime);
-          return `<tr><td>${s.startTime}</td><td>${s.endTime||'—'}</td><td>${minsToStr(m)}</td><td style="color:var(--yellow)">${rp(calcEarning(m))}</td></tr>`;
-        }).join('')}</tbody>
-      </table>` : '<div style="color:var(--muted);font-size:0.83rem;margin-bottom:10px">Tidak ada sesi</div>'}
+      ${sess.length ? sess.map(s => {
+        const m       = calcDiff(s.startTime, s.endTime);
+        const sm      = s.sessionMakmin || [];
+        const smTotal = sm.reduce((a,t) => a+t.price*t.qty, 0);
+        const isDone  = !!s.endTime;
+        return `<div style="background:var(--surface);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <b style="font-size:0.83rem">${s.tvNum ? 'TV'+s.tvNum : 'TV-'}</b>
+            <span class="sess-badge ${isDone?'done':'active'}">${isDone?'✅ Selesai':'🟢 Aktif'}</span>
+            <span style="font-size:0.78rem;color:var(--muted);margin-left:auto">${s.startTime} → ${s.endTime||'—'} · ${minsToStr(m)} · <span style="color:var(--yellow)">${rp(calcEarning(m))}</span></span>
+          </div>
+          ${sm.length ? `<table class="data-table" style="font-size:0.78rem">
+            <thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+            <tbody>${sm.map(x => `<tr><td>${x.menuName}</td><td>${x.qty}</td><td style="color:var(--yellow)">${rp(x.price*x.qty)}</td></tr>`).join('')}</tbody>
+          </table>
+          <div style="text-align:right;font-size:0.75rem;color:var(--accent2);margin-top:4px">Subtotal makmin: <b>${rp(smTotal)}</b></div>`
+          : `<div style="color:var(--muted);font-size:0.76rem">Tidak ada pesanan makmin</div>`}
+        </div>`;
+      }).join('') : '<div style="color:var(--muted);font-size:0.83rem;margin-bottom:10px">Tidak ada sesi</div>'}
 
-      <div style="font-size:0.75rem;color:var(--muted);font-weight:600;margin-bottom:8px">TRANSAKSI MAKMIN (${tx.length} item)</div>
-      ${tx.length ? `<table class="data-table" style="margin-bottom:12px">
-        <thead><tr><th>Waktu</th><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
-        <tbody>${tx.map(t => `<tr><td>${t.time}</td><td>${t.menuName}</td><td>${t.qty}</td><td style="color:var(--yellow)">${rp(t.price*t.qty)}</td></tr>`).join('')}</tbody>
-      </table>` : '<div style="color:var(--muted);font-size:0.83rem;margin-bottom:10px">Tidak ada transaksi</div>'}
-
-      <div style="font-size:0.75rem;color:var(--muted);font-weight:600;margin-bottom:8px">PENGELUARAN</div>
+      <div style="font-size:0.75rem;color:var(--muted);font-weight:600;margin-bottom:8px;margin-top:12px">PENGELUARAN</div>
       ${exp.length ? `<table class="data-table" style="margin-bottom:12px">
         <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead>
         <tbody>${exp.map(e => `<tr><td>${e.desc}</td><td style="color:var(--red)">${rp(e.amount)}</td></tr>`).join('')}</tbody>
@@ -917,7 +1169,6 @@ function renderDayDetail(k, d) {
       ${k !== TODAY ? `<div style="margin-top:10px"><button class="btn-danger-sm" onclick="deleteDay('${k}')">🗑 Hapus Data Hari Ini</button></div>` : ''}
     </div>`;
 }
-
 function deleteDay(k) {
   if (!confirm(`Hapus data ${fmtKey(k)}?`)) return;
   localStorage.removeItem('r3ps_day_' + k);
@@ -929,72 +1180,87 @@ function deleteDay(k) {
 // ════════════════════════════════════════════
 function exportExcel(mode) {
   const wb   = XLSX.utils.book_new();
-  const keys = mode === 'today' ? [TODAY] : allDayKeys().slice().reverse(); // oldest first for recaps
+  const keys = mode === 'today' ? [TODAY] : allDayKeys().slice().reverse();
 
-  // — Sheet per day —
   keys.forEach(k => {
     const d    = loadDay(k);
     const t    = calcDayTotals(d);
     const sess = d.sessions || [];
-    const tx   = d.makminTx || [];
     const exp  = d.expenses || [];
+    const tvNums = [...new Set(sess.map(s => s.tvNum || '?'))].sort((a,b) => a-b);
 
     const rows = [
       ['R.3 PLAYSTATION — LAPORAN HARIAN'],
       ['Tanggal', fmtKey(k)],
       [],
-      ['— SESI PS3 —'],
-      ['No','Jam Mulai','Jam Selesai','Durasi','Pendapatan (Rp)'],
-      ...sess.map((s,i) => {
-        const m = calcDiff(s.startTime, s.endTime);
-        return [i+1, s.startTime, s.endTime||'—', minsToStr(m), calcEarning(m)];
-      }),
-      ['','','','TOTAL PS', t.totalPS],
-      [],
-      ['— TRANSAKSI MAKANAN & MINUMAN —'],
-      ['No','Waktu','Item','Kategori','Qty','Harga Satuan','Total (Rp)'],
-      ...tx.map((x,i) => [i+1, x.time, x.menuName, x.category, x.qty, x.price, x.price*x.qty]),
-      ['','','','','','TOTAL MAKMIN', t.totalMM],
-      [],
-      ['— PENGELUARAN —'],
-      ['No','Keterangan','Jumlah (Rp)'],
-      ...exp.map((e,i) => [i+1, e.desc, e.amount]),
-      ['','TOTAL PENGELUARAN', t.totalExp],
-      [],
-      ['— RINGKASAN —'],
-      ['Total Jam Main', minsToStr(t.totalMins)],
-      ['Pendapatan PS', t.totalPS],
-      ['Pendapatan Makmin', t.totalMM],
-      ['Total Pendapatan', t.totalPend],
-      ['Total Pengeluaran', t.totalExp],
-      ['LABA BERSIH', t.laba],
     ];
+
+    tvNums.forEach(tv => {
+      const tvSess = sess.filter(s => (s.tvNum || '?') === tv);
+      rows.push([`— TV${tv} —`]);
+      rows.push(['Jam Mulai','Jam Selesai','Durasi','Bayar Main (Rp)','Item Makmin','Qty','Harga','Subtotal Makmin (Rp)','TOTAL SESI (Rp)']);
+      tvSess.forEach(s => {
+        const mins    = calcDiff(s.startTime, s.endTime);
+        const earn    = calcEarning(mins);
+        const sm      = s.sessionMakmin || [];
+        const smTotal = sm.reduce((a,x) => a+x.price*x.qty, 0);
+        if (sm.length === 0) {
+          rows.push([s.startTime, s.endTime||'—', minsToStr(mins), earn, '—', '', '', 0, earn]);
+        } else {
+          sm.forEach((x, j) => {
+            rows.push([
+              j===0 ? s.startTime : '',
+              j===0 ? (s.endTime||'—') : '',
+              j===0 ? minsToStr(mins) : '',
+              j===0 ? earn : '',
+              x.menuName, x.qty, x.price, x.price*x.qty,
+              j===0 ? earn+smTotal : ''
+            ]);
+          });
+        }
+      });
+      const tvEarn   = tvSess.reduce((a,s) => a+calcEarning(calcDiff(s.startTime,s.endTime)), 0);
+      const tvMakmin = tvSess.reduce((a,s) => a+(s.sessionMakmin||[]).reduce((b,x) => b+x.price*x.qty, 0), 0);
+      rows.push(['','','Subtotal TV'+tv, tvEarn,'','','',tvMakmin, tvEarn+tvMakmin]);
+      rows.push([]);
+    });
+
+    rows.push(['— PENGELUARAN —']);
+    rows.push(['No','Keterangan','Jumlah (Rp)']);
+    exp.forEach((e,i) => rows.push([i+1, e.desc, e.amount]));
+    rows.push(['','TOTAL PENGELUARAN', t.totalExp]);
+    rows.push([]);
+
+    rows.push(['— RINGKASAN —']);
+    rows.push(['Total Jam Main', minsToStr(t.totalMins)]);
+    rows.push(['Pendapatan PS', t.totalPS]);
+    rows.push(['Pendapatan Makmin', t.totalMM]);
+    rows.push(['Total Pendapatan', t.totalPend]);
+    rows.push(['Total Pengeluaran', t.totalExp]);
+    rows.push(['LABA BERSIH', t.laba]);
+
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [{wch:5},{wch:12},{wch:12},{wch:18},{wch:22},{wch:18},{wch:14}];
-    const sheetName = k; // YYYY-MM-DD fits 31 chars
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    ws['!cols'] = [{wch:12},{wch:12},{wch:14},{wch:16},{wch:20},{wch:6},{wch:12},{wch:18},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws, k);
   });
 
-  // — Rekap Sheet (only in 'all' mode) —
   if (mode === 'all' && keys.length > 1) {
     const header = ['Tanggal','Hari','Total Jam','Pend. PS','Pend. Makmin','Total Pend.','Pengeluaran','Laba Bersih'];
-    const rows = keys.map(k => {
+    const rows   = keys.map(k => {
       const d = loadDay(k);
       const t = calcDayTotals(d);
-      return [fmtKey(k), DAYS_ID[new Date(...k.split('-').map((v,i)=>i===1?v-1:+v)).getDay()],
+      return [fmtKey(k), DAYS_ID[new Date(...k.split('-').map((v,i) => i===1?v-1:+v)).getDay()],
         minsToStr(t.totalMins), t.totalPS, t.totalMM, t.totalPend, t.totalExp, t.laba];
     });
     const rekapRows = [['R.3 PLAYSTATION — REKAP SEMUA HARI'], [], header, ...rows];
-    const wsRekap = XLSX.utils.aoa_to_sheet(rekapRows);
+    const wsRekap   = XLSX.utils.aoa_to_sheet(rekapRows);
     wsRekap['!cols'] = [{wch:28},{wch:10},{wch:12},{wch:14},{wch:16},{wch:14},{wch:14},{wch:14}];
     XLSX.utils.book_append_sheet(wb, wsRekap, 'REKAP');
   }
 
-  const now = new Date();
-  const tgl = `${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}`;
-  const fname = mode === 'today'
-    ? `R3PS_${TODAY}.xlsx`
-    : `R3PS_Semua_Riwayat_export${tgl}.xlsx`;
+  const now   = new Date();
+  const tgl   = `${now.getDate()}-${now.getMonth()+1}-${now.getFullYear()}`;
+  const fname = mode === 'today' ? `R3PS_${TODAY}.xlsx` : `R3PS_Semua_Riwayat_export${tgl}.xlsx`;
   XLSX.writeFile(wb, fname);
 }
 
@@ -1003,14 +1269,11 @@ function exportExcel(mode) {
 // ════════════════════════════════════════════
 function renderAll() {
   renderPsSessions();
-  renderMenuGrid();
-  renderMakminLog();
   renderExpenses();
   recalc();
 }
 window._appInit = function() { syncFromCloud(); };
 renderAll();
-// Try sync if Firebase already ready
 setTimeout(() => { if (window._cloudReady) syncFromCloud(); }, 500);
 </script>
 </body>
