@@ -619,7 +619,10 @@ function changeUnitCount(d) {
 // ════════════════════════════════════════════
 function addPsSession() {
   const now = new Date();
-  getSessions().push({ id: nextId++, startTime: now.toTimeString().slice(0,5), endTime: '', note: '' });
+  const h = now.getHours();
+  const m = Math.floor(now.getMinutes() / 5) * 5;
+  const startTime = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+  getSessions().push({ id: nextId++, startTime, endTime: '', note: '' });
   persist();
   renderPsSessions();
   recalc();
@@ -630,38 +633,26 @@ function removePsSession(id) {
 }
 function psChange(id, field, val) {
   const s = getSessions().find(x => x.id === id);
-  if (s) { s[field] = val; persist(); renderPsSessions(); recalc(); }
+  if (!s) return;
+  s[field] = val;
+  persist();
+  const mins = calcDiff(s.startTime, s.endTime);
+  const earn = calcEarning(mins);
+  const row = document.getElementById('psrow-' + id);
+  if (row) {
+    const durEl = row.querySelector('.ps-dur');
+    const payEl = row.querySelector('.ps-pay');
+    if (durEl) durEl.textContent = minsToStr(mins);
+    if (payEl) payEl.textContent = rp(earn);
+  }
+  recalc();
 }
 
 
 function timeSelect(id, field, val) {
-  const hours = Array.from({length:24},(_,i)=>i);
-  const mins  = Array.from({length:60},(_,i)=>i);
-  const hh = val ? val.split(':')[0] : '';
-  const mm = val ? val.split(':')[1] : '';
-  const hOpts = '<option value="">--</option>' + hours.map(h => {
-    const v = String(h).padStart(2,'0');
-    return `<option value="${v}" ${v===hh?'selected':''}>${v}</option>`;
-  }).join('');
-  const mOpts = '<option value="">--</option>' + mins.map(m => {
-    const v = String(m).padStart(2,'0');
-    return `<option value="${v}" ${v===mm?'selected':''}>${v}</option>`;
-  }).join('');
-  return `<div style="display:flex;gap:4px;align-items:center">
-    <select class="form-select" style="padding:6px 4px;font-size:0.85rem;flex:1" onchange="psTimeChange(${id},'${field}','h',this.value)">${hOpts}</select>
-    <span style="font-weight:700;color:var(--muted)">:</span>
-    <select class="form-select" style="padding:6px 4px;font-size:0.85rem;flex:1" onchange="psTimeChange(${id},'${field}','m',this.value)">${mOpts}</select>
-  </div>`;
+  return `<input type="time" class="form-control" value="${val||''}" onchange="psChange(${id},'${field}',this.value)">`;
 }
-function psTimeChange(id, field, part, val) {
-  const s = getSessions().find(x => x.id === id);
-  if (!s) return;
-  let [hh, mm] = (s[field]||'00:00').split(':');
-  if (part==='h') hh = val; else mm = val;
-  if (hh && mm) s[field] = hh+':'+mm;
-  else s[field] = '';
-  persist(); renderPsSessions(); recalc();
-}
+
 function renderPsSessions() {
   document.getElementById('unitCountDisp').textContent = getUnitCount();
   const list = document.getElementById('psSessionList');
@@ -673,12 +664,12 @@ function renderPsSessions() {
   list.innerHTML = sess.map((s,i) => {
     const mins = calcDiff(s.startTime, s.endTime);
     const earn = calcEarning(mins);
-    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+    return `<div id="psrow-${s.id}" style="padding:12px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div class="unit-label">PS${i+1}</div>
         <div style="display:flex;align-items:center;gap:10px">
-          <span style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--green)">${minsToStr(mins)}</span>
-          <span style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--yellow)">${rp(earn)}</span>
+          <span class="ps-dur" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--green)">${minsToStr(mins)}</span>
+          <span class="ps-pay" style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--yellow)">${rp(earn)}</span>
           <button class="btn-danger-sm" onclick="removePsSession(${s.id})">✕</button>
         </div>
       </div>
