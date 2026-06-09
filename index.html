@@ -631,6 +631,35 @@ function psChange(id, field, val) {
   if (s) { s[field] = val; persist(); renderPsSessions(); recalc(); }
 }
 
+
+function timeSelect(id, field, val) {
+  const hours = Array.from({length:24},(_,i)=>i);
+  const mins  = Array.from({length:60},(_,i)=>i);
+  const hh = val ? val.split(':')[0] : '';
+  const mm = val ? val.split(':')[1] : '';
+  const hOpts = '<option value="">--</option>' + hours.map(h => {
+    const v = String(h).padStart(2,'0');
+    return `<option value="${v}" ${v===hh?'selected':''}>${v}</option>`;
+  }).join('');
+  const mOpts = '<option value="">--</option>' + mins.map(m => {
+    const v = String(m).padStart(2,'0');
+    return `<option value="${v}" ${v===mm?'selected':''}>${v}</option>`;
+  }).join('');
+  return `<div style="display:flex;gap:4px;align-items:center">
+    <select class="form-select" style="padding:6px 4px;font-size:0.85rem;flex:1" onchange="psTimeChange(${id},'${field}','h',this.value)">${hOpts}</select>
+    <span style="font-weight:700;color:var(--muted)">:</span>
+    <select class="form-select" style="padding:6px 4px;font-size:0.85rem;flex:1" onchange="psTimeChange(${id},'${field}','m',this.value)">${mOpts}</select>
+  </div>`;
+}
+function psTimeChange(id, field, part, val) {
+  const s = getSessions().find(x => x.id === id);
+  if (!s) return;
+  let [hh, mm] = (s[field]||'00:00').split(':');
+  if (part==='h') hh = val; else mm = val;
+  if (hh && mm) s[field] = hh+':'+mm;
+  else s[field] = '';
+  persist(); renderPsSessions(); recalc();
+}
 function renderPsSessions() {
   document.getElementById('unitCountDisp').textContent = getUnitCount();
   const list = document.getElementById('psSessionList');
@@ -646,11 +675,11 @@ function renderPsSessions() {
       <div class="unit-label">PS${i+1}</div>
       <div>
         <label class="small">Mulai</label>
-        <input type="time" class="form-control" value="${s.startTime}" onchange="psChange(${s.id},'startTime',this.value)">
+        ${timeSelect(s.id,'startTime',s.startTime)}
       </div>
       <div>
         <label class="small">Selesai</label>
-        <input type="time" class="form-control" value="${s.endTime}" onchange="psChange(${s.id},'endTime',this.value)">
+        ${timeSelect(s.id,'endTime',s.endTime)}
       </div>
       <div>
         <label class="small">Durasi</label>
