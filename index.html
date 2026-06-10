@@ -953,16 +953,22 @@ async function renderHistory(){
   const el=document.getElementById('historyList');
   el.innerHTML='<div class="empty-state" style="padding:16px">⏳ Memuat riwayat...</div>';
 
-  // Ambil semua key dari cloud, simpan ke localStorage kalau belum ada
   if(window._cloudAllKeys){
     try{
       const cloudKeys=await window._cloudAllKeys();
-      for(const k of cloudKeys){
-        if(k.startsWith('day_')){
-          const dk=k.replace('day_','');
-          if(!localStorage.getItem('r3ps_day_'+dk)){
-            const d=await window._cloudLoad(k); if(d)localStorage.setItem('r3ps_day_'+dk,JSON.stringify(d));
-          }
+      const cloudDayKeys=cloudKeys.filter(k=>k.startsWith('day_')).map(k=>k.replace('day_',''));
+
+      // Hapus lokal yang sudah tidak ada di cloud
+      allDayKeysLocal().forEach(k=>{
+        if(!cloudDayKeys.includes(k) && !(shiftState.active && k===ACTIVE_KEY)){
+          localStorage.removeItem('r3ps_day_'+k);
+        }
+      });
+
+      // Tambah lokal yang belum ada dari cloud
+      for(const dk of cloudDayKeys){
+        if(!localStorage.getItem('r3ps_day_'+dk)){
+          const d=await window._cloudLoad('day_'+dk); if(d)localStorage.setItem('r3ps_day_'+dk,JSON.stringify(d));
         }
       }
     }catch(e){console.warn('history cloud fetch failed',e);}
