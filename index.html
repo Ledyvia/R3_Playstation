@@ -1023,7 +1023,7 @@ function renderDayDetail(k,d){
       <span>💸 Keluar: <b style="color:var(--red)">${rp(t.totalExp)}</b></span>
       <span>✅ Laba: <b style="color:${t.laba>=0?'var(--green)':'var(--red)'}">${rp(t.laba)}</b></span>
     </div>
-    ${!(shiftState.active && k===ACTIVE_KEY)?`<div style="margin-top:10px"><button class="btn-danger-sm" onclick="deleteDay('${k}')">🗑 Hapus Data Hari Ini</button></div>`:''}
+    ${!(shiftState.active && k===ACTIVE_KEY)?`<div style="margin-top:10px">
       <button class="btn-danger-sm" onclick="deleteDay('${k}')">🗑 Hapus Data Hari Ini</button>
     </div>`:''}
   </div>`;
