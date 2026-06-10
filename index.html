@@ -527,7 +527,7 @@ function bukaOperasional(){
   shiftState = {active:true, operKey, openTime};
   saveShift(shiftState);
   ACTIVE_KEY = operKey;
-  dayData    = loadDay(operKey);
+  dayData    = emptyDay();
   dayData.shiftOpen     = true;
   dayData.shiftOpenTime = openTime;
   dayData.shiftOperDate = operKey;
