@@ -170,6 +170,28 @@
   .sess-tx-total{font-family:'Orbitron',sans-serif;font-size:0.77rem;color:var(--yellow);min-width:60px;text-align:right;}
   .time-readonly{padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:0.87rem;color:var(--muted);}
 
+  /* PIN LOCK */
+  #pinOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#0b0e1a,#1b2038);
+    display:flex;align-items:center;justify-content:center;z-index:99999;flex-direction:column;gap:0;}
+  .pin-box{background:#fff;border-radius:20px;padding:36px 32px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+  .pin-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.1rem;
+    background:linear-gradient(90deg,#3d6bff,#7c3aed);-webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;margin-bottom:4px;}
+  .pin-sub{font-size:0.72rem;color:#64748b;letter-spacing:3px;margin-bottom:24px;}
+  .pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:20px;}
+  .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #d0d8f0;background:transparent;transition:all .15s;}
+  .pin-dot.filled{background:linear-gradient(135deg,#3d6bff,#7c3aed);border-color:#3d6bff;}
+  .pin-dot.error{background:#e11d48;border-color:#e11d48;}
+  .pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .pin-key{background:#f0f4ff;border:1px solid #d0d8f0;border-radius:12px;padding:14px;
+    font-size:1.2rem;font-weight:700;cursor:pointer;transition:all .12s;color:#1e2a4a;font-family:'Orbitron',sans-serif;}
+  .pin-key:hover{background:#dde6ff;border-color:#3d6bff;}
+  .pin-key:active{transform:scale(.93);}
+  .pin-key.del{font-size:1rem;color:#64748b;}
+  .pin-err{color:#e11d48;font-size:0.78rem;min-height:18px;margin-bottom:6px;}
+  .pin-lock{color:#d97706;font-size:0.78rem;}
+  .pin-change-btn{font-size:0.75rem;color:#3d6bff;background:none;border:none;cursor:pointer;margin-top:8px;text-decoration:underline;}
+
   /* Notif bar perangkat lain */
   .rt-toast{position:fixed;bottom:20px;right:20px;background:#1e2a4a;color:#fff;
     border-radius:10px;padding:10px 18px;font-size:0.82rem;z-index:9999;
@@ -205,6 +227,36 @@
 </style>
 </head>
 <body>
+
+<!-- PIN OVERLAY -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">R.3 PLAYSTATION</div>
+    <div class="pin-sub">KELOLA USAHA GAMING</div>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-err" id="pinErr"></div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key" onclick="pinPress('0')" style="grid-column:2">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-lock" id="pinLock"></div>
+    <button class="pin-change-btn" onclick="showChangePin()">🔑 Ganti PIN</button>
+  </div>
+</div>
 
 <!-- Toast notif -->
 <div class="rt-toast" id="rtToast">📡 <span id="rtToastMsg">Diperbarui dari perangkat lain</span></div>
@@ -311,10 +363,9 @@
   }
 
   // ── Real-time listener ──
-  // Simpan unsubscribe per key agar tidak double-listen
   const _unsubs = {};
   function cloudListen(key, cb) {
-    if (_unsubs[key]) return; // sudah aktif
+    if (_unsubs[key]) return;
     _unsubs[key] = onSnapshot(
       doc(db,'r3ps',key),
       snap => { if (snap.exists()) cb(JSON.parse(snap.data().payload)); },
@@ -335,7 +386,6 @@
   window._cloudUnlisten = cloudUnlisten;
   window._cloudReady    = true;
 
-  // Mulai app setelah Firebase siap
   setTimeout(() => { if (window._appInit) window._appInit(); }, 300);
 </script>
 
@@ -399,7 +449,6 @@ let shiftState  = loadShift();
 let ACTIVE_KEY  = shiftState.active ? shiftState.operKey : calKey();
 let dayData     = shiftState.active ? loadDay(ACTIVE_KEY) : emptyDay();
 
-// Flag: sedang kita yang nulis → abaikan listener sekejap
 let _localWriting = false;
 function persistDay(){
   _localWriting = true;
@@ -435,12 +484,11 @@ function showToast(msg){
 }
 
 // ══════════════════════════════════════════════════
-//  REAL-TIME LISTENERS — dipasang setelah Firebase ready
+//  REAL-TIME LISTENERS
 // ══════════════════════════════════════════════════
 function attachListeners(){
   if(!window._cloudListen) return;
 
-  // 1. Listener SHIFT — deteksi buka/tutup dari device lain
   window._cloudListen('shift', incoming => {
     if(_localWriting) return;
     const prev = JSON.stringify(shiftState);
@@ -453,14 +501,12 @@ function attachListeners(){
     if(incoming.active){
       ACTIVE_KEY = incoming.operKey;
       dayData    = loadDay(ACTIVE_KEY);
-      // Pasang listener day baru
       attachDayListener(ACTIVE_KEY);
     } else {
       dayData    = emptyDay();
       ACTIVE_KEY = calKey();
     }
 
-    // Jangan re-render kalau user sedang ketik input waktu
     if(!document.activeElement||document.activeElement.type!=='time'){
       renderShiftBar();
       renderMainContent();
@@ -468,7 +514,6 @@ function attachListeners(){
     }
   });
 
-  // 2. Listener MENU
   window._cloudListen('menu', incoming => {
     if(_localWriting) return;
     if(JSON.stringify(incoming)===JSON.stringify(menuItems)) return;
@@ -479,7 +524,6 @@ function attachListeners(){
     showToast('🍜 Menu diperbarui dari perangkat lain');
   });
 
-  // 3. Listener DAY aktif (jika shift sedang buka)
   if(shiftState.active) attachDayListener(ACTIVE_KEY);
 }
 
@@ -489,7 +533,6 @@ function attachDayListener(key){
     if(_localWriting) return;
     if(JSON.stringify(incoming)===JSON.stringify(dayData)) return;
 
-    // Merge: gabungkan sesi & expense berdasarkan ID, remote menang
     dayData = mergeDay(dayData, incoming);
     localStorage.setItem('r3ps_day_'+key, JSON.stringify(dayData));
 
@@ -502,15 +545,12 @@ function attachDayListener(key){
   });
 }
 
-// Merge berdasarkan ID unik — tidak ada yang terhapus secara tidak sengaja
 function mergeDay(local, remote){
   const out = Object.assign({}, remote);
-  // Sessions: remote menang untuk field, tapi pertahankan semua ID dari keduanya
   const sm = {};
   (local.sessions  || []).forEach(s => sm[s.id] = s);
-  (remote.sessions || []).forEach(s => sm[s.id] = { ...sm[s.id], ...s }); // remote menang
+  (remote.sessions || []).forEach(s => sm[s.id] = { ...sm[s.id], ...s });
   out.sessions = Object.values(sm).sort((a,b) => (a.inputOrder||0)-(b.inputOrder||0));
-  // Expenses
   const em = {};
   (local.expenses  || []).forEach(e => em[e.id] = e);
   (remote.expenses || []).forEach(e => em[e.id] = { ...em[e.id], ...e });
@@ -549,9 +589,8 @@ function tutupOperasional(){
   dayData.shiftOpen      = false;
   dayData.shiftCloseTime = closeTime;
   persistDay();
-  exportExcel('today'); // auto download
+  exportExcel('today');
 
-  // Lepas listener day yang lama
   if(window._cloudUnlisten) window._cloudUnlisten('day_'+ACTIVE_KEY);
 
   shiftState = {active:false, operKey:null, openTime:null};
@@ -726,17 +765,14 @@ function confirmAddSession(){
 }
 
 // ══════════════════════════════════════════════════
-//  SESSION STATUS
+//  SESSION STATUS  ← REVISI DI SINI
 // ══════════════════════════════════════════════════
 function getSessStatus(s){
   if(!s.startTime) return 'idle';
-  if(!s.endTime)   return 'playing';
-  const now=new Date(), nowM=now.getHours()*60+now.getMinutes();
-  const toM=t=>{const[h,m]=t.split(':').map(Number);return h*60+m;};
-  const sM=toM(s.startTime), eM=toM(s.endTime);
-  if(eM<sM){ return (nowM>=eM && nowM<sM)?'done':'playing'; }
-  return nowM>=eM?'done':'playing';
+  if(s.endTime) return 'done';
+  return 'playing';
 }
+
 function sessBadge(s){
   const st=getSessStatus(s);
   if(st==='done')    return`<span class="sess-badge done">✅ Selesai</span>`;
@@ -947,7 +983,7 @@ function recalc(){
 }
 
 // ══════════════════════════════════════════════════
-//  HISTORY — tarik dari cloud jika key tidak ada lokal
+//  HISTORY
 // ══════════════════════════════════════════════════
 async function renderHistory(){
   const el=document.getElementById('historyList');
@@ -958,14 +994,12 @@ async function renderHistory(){
       const cloudKeys=await window._cloudAllKeys();
       const cloudDayKeys=cloudKeys.filter(k=>k.startsWith('day_')).map(k=>k.replace('day_',''));
 
-      // Hapus lokal yang sudah tidak ada di cloud
       allDayKeysLocal().forEach(k=>{
         if(!cloudDayKeys.includes(k) && !(shiftState.active && k===ACTIVE_KEY)){
           localStorage.removeItem('r3ps_day_'+k);
         }
       });
 
-      // Tambah lokal yang belum ada dari cloud
       for(const dk of cloudDayKeys){
         if(!localStorage.getItem('r3ps_day_'+dk)){
           const d=await window._cloudLoad('day_'+dk); if(d)localStorage.setItem('r3ps_day_'+dk,JSON.stringify(d));
@@ -1038,12 +1072,12 @@ function renderDayDetail(k,d){
 async function deleteDay(k){
   if(!confirm('Hapus data '+fmtKey(k)+'?'))return;
   localStorage.removeItem('r3ps_day_'+k);
-  if(window._cloudDelete) await window._cloudDelete('day_'+k); // hapus dari cloud juga
+  if(window._cloudDelete) await window._cloudDelete('day_'+k);
   renderHistory();
 }
 
 // ══════════════════════════════════════════════════
-//  EXPORT — tarik dari cloud untuk key yang tidak ada di lokal
+//  EXPORT
 // ══════════════════════════════════════════════════
 async function exportExcel(mode){
   const wb=XLSX.utils.book_new();
@@ -1051,7 +1085,6 @@ async function exportExcel(mode){
   if(mode==='today'){
     keys=[ACTIVE_KEY];
   } else {
-    // Pastikan semua cloud data sudah di lokal
     if(window._cloudAllKeys){
       try{
         const ck=await window._cloudAllKeys();
@@ -1065,7 +1098,7 @@ async function exportExcel(mode){
         }
       }catch(e){console.warn('export cloud fetch:',e);}
     }
-    keys=allDayKeysLocal().slice().reverse(); // oldest first
+    keys=allDayKeysLocal().slice().reverse();
   }
 
   keys.forEach(k=>{
@@ -1128,21 +1161,17 @@ renderMenuMgr();
 window._appInit = async function(){
   setSyncLabel('☁️ Sinkronisasi...','#d97706');
   try{
-    // Sync menu
     const cm = await window._cloudLoad('menu');
     if(cm){menuItems=cm;localStorage.setItem('r3ps_menu',JSON.stringify(cm));}
 
-    // Sync shift state dari cloud (deteksi kalau device lain sudah buka)
     const cs = await window._cloudLoad('shift');
     if(cs && cs.active && !shiftState.active){
       shiftState=cs; localStorage.setItem('r3ps_shift',JSON.stringify(cs));
       ACTIVE_KEY=cs.operKey;
       dayData=loadDay(ACTIVE_KEY);
-      // Tarik data hari ini dari cloud
       const cd=await window._cloudLoad('day_'+ACTIVE_KEY);
       if(cd){dayData=cd;localStorage.setItem('r3ps_day_'+ACTIVE_KEY,JSON.stringify(cd));}
     } else if(shiftState.active){
-      // Sync data hari aktif
       const cd=await window._cloudLoad('day_'+ACTIVE_KEY);
       if(cd){
         dayData=mergeDay(dayData,cd);
@@ -1154,18 +1183,99 @@ window._appInit = async function(){
     renderMainContent();
     renderMenuMgr();
 
-    // Pasang real-time listeners SETELAH initial sync
     attachListeners();
     setSyncLabel('☁️ Real-time aktif','#059669');
   }catch(e){
     console.warn('init sync failed:',e);
     setSyncLabel('⚠️ Offline mode','#e11d48');
-    // Tetap pasang listener meski sync awal gagal
     attachListeners();
   }
 };
 
 setTimeout(()=>{ if(window._cloudReady) window._appInit(); }, 500);
+
+// ══════════════════════════════════════════════════
+//  PIN LOCK
+// ══════════════════════════════════════════════════
+const DEFAULT_PIN = '7120';
+let _pinInput = '', _pinAttempts = 0, _pinLocked = false, _pinLockTimer = null;
+
+function getPin(){ return localStorage.getItem('r3ps_pin') || DEFAULT_PIN; }
+function savePin(p){ localStorage.setItem('r3ps_pin', p); if(window._cloudSave) window._cloudSave('pin', p); }
+
+function pinPress(d){
+  if(_pinLocked) return;
+  const maxLen = getPin().length;
+  if(_pinInput.length >= maxLen) return;
+  _pinInput += d;
+  updatePinDots();
+  if(_pinInput.length === maxLen) setTimeout(checkPin, 120);
+}
+function pinDel(){
+  if(_pinLocked) return;
+  _pinInput = _pinInput.slice(0,-1);
+  updatePinDots();
+  document.getElementById('pinErr').textContent = '';
+}
+function updatePinDots(){
+  const pin = getPin(), len = pin.length;
+  const wrap = document.getElementById('pinDots');
+  if(wrap.children.length !== len){
+    wrap.innerHTML = Array.from({length:len},(_,i)=>`<div class="pin-dot" id="pd${i}"></div>`).join('');
+  }
+  for(let i=0;i<len;i++){
+    const d = document.getElementById('pd'+i);
+    if(d) d.classList.toggle('filled', i < _pinInput.length);
+  }
+}
+function checkPin(){
+  if(_pinInput === getPin()){
+    document.getElementById('pinOverlay').style.display = 'none';
+    _pinAttempts = 0;
+    sessionStorage.setItem('r3ps_auth','1');
+  } else {
+    _pinAttempts++;
+    _pinInput = '';
+    updatePinDots();
+    for(let i=0;i<getPin().length;i++){const d=document.getElementById('pd'+i);if(d){d.classList.add('error');setTimeout(()=>d.classList.remove('error'),500);}}
+    if(_pinAttempts >= 3){
+      _pinLocked = true;
+      let sisa = 30;
+      const lockEl = document.getElementById('pinLock');
+      lockEl.textContent = `🔒 Terlalu banyak percobaan. Tunggu ${sisa}s`;
+      _pinLockTimer = setInterval(()=>{
+        sisa--;
+        if(sisa <= 0){ clearInterval(_pinLockTimer); _pinLocked=false; _pinAttempts=0; lockEl.textContent=''; }
+        else lockEl.textContent = `🔒 Tunggu ${sisa}s`;
+      }, 1000);
+      document.getElementById('pinErr').textContent = '';
+    } else {
+      document.getElementById('pinErr').textContent = `PIN salah! (${3-_pinAttempts}x lagi)`;
+    }
+  }
+}
+if(!sessionStorage.getItem('r3ps_auth')){
+  document.getElementById('pinOverlay').style.display = 'flex';
+} else {
+  document.getElementById('pinOverlay').style.display = 'none';
+}
+document.addEventListener('keydown', e=>{
+  if(document.getElementById('pinOverlay').style.display==='none') return;
+  if(e.key>='0'&&e.key<='9') pinPress(e.key);
+  else if(e.key==='Backspace') pinDel();
+  else if(e.key==='Enter' && _pinInput.length===getPin().length) checkPin();
+});
+
+function showChangePin(){
+  const old = prompt('Masukkan PIN lama:');
+  if(old !== getPin()){ alert('PIN lama salah!'); return; }
+  const n1 = prompt('Masukkan PIN baru (4-6 angka):');
+  if(!n1||n1.length<4||n1.length>6||!/^\d+$/.test(n1)){ alert('PIN tidak valid!'); return; }
+  const n2 = prompt('Konfirmasi PIN baru:');
+  if(n1 !== n2){ alert('PIN tidak cocok!'); return; }
+  savePin(n1);
+  alert('✅ PIN berhasil diubah!');
+}
 </script>
 </body>
 </html>
